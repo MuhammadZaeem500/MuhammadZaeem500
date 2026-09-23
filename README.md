@@ -84,7 +84,7 @@ Beyond web development, I actively leverage Python to build data-driven solution
 
 <div align="center">
 
-<h3><code>zaeem@github ~ $ ./contributions.sh</code></h3>
+<h3><code></code></h3>
 <img src="./contrib-heatmap.svg" width="860" />
 
 </div>
