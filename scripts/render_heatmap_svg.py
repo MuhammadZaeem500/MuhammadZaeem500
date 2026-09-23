@@ -59,7 +59,7 @@ def render_heatmap():
   svg_lines.append("    </g>")
 
   # Footer text positioned safely inside the viewBox with no clipping
-  footer_y = 40 + (7 * step) + 20
+  footer_y = 50 + (7 * step) + 20
   svg_lines.extend([
       (
           f'    <text x="0" y="{footer_y}" class="text">{total_contributions}'
