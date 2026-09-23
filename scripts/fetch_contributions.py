@@ -11,8 +11,8 @@ def fetch_contributions():
   print(f"Fetching contribution data for {USERNAME}...")
   headers = {
       "User-Agent": (
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,"
-          " like Gecko) Chrome/115.0.0.0 Safari/537.36"
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+          " (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
       )
   }
   response = requests.get(URL, headers=headers)
@@ -23,14 +23,19 @@ def fetch_contributions():
 
   soup = BeautifulSoup(response.text, "html.parser")
 
-  # Find all contribution days
   days = []
-  svg_days = soup.find_all("td", class_="ContributionCalendar-day")
+  # GitHub uses tooltips or data cells inside the contribution graph table
+  # Let's target both standard table cells and tooltips/rects
+  cells = soup.find_all("td", class_="ContributionCalendar-day")
 
-  for day in svg_days:
-    date = day.get("data-date")
-    count_text = day.get("data-count")
-    level = day.get("data-level", "0")
+  if not cells:
+    # Fallback to finding any elements with data-date attributes if class names change
+    cells = soup.find_all(attrs={"data-date": True})
+
+  for cell in cells:
+    date = cell.get("data-date")
+    count_text = cell.get("data-count")
+    level = cell.get("data-level", "0")
 
     if date:
       count = int(count_text) if count_text and count_text.isdigit() else 0
