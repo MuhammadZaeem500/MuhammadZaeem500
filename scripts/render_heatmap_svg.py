@@ -16,7 +16,7 @@ def render_heatmap():
   total_contributions = sum(int(d.get("count", 0)) for d in days)
 
   width = 860
-  height = 190  # Increased height so the footer text is fully visible
+  height = 155  # Compact height so nothing gets clipped by GitHub
   cell_size = 11
   cell_gap = 4
   step = cell_size + cell_gap
@@ -28,13 +28,20 @@ def render_heatmap():
       ' \'Segoe UI\', Helvetica, Arial, sans-serif;">',
       "  <style>",
       "    .cell { shape-rendering: geometricPrecision; rx: 2px; ry: 2px; }",
-      "    .text { fill: #8b949e; font-size: 12px; }",
       "    .title { fill: #c9d1d9; font-size: 13px; font-weight: 600; }",
+      "    .subtitle { fill: #8b949e; font-size: 12px; }",
       "  </style>",
       '  <rect width="100%" height="100%" fill="#0d1117" rx="6"/>',
       '  <g transform="translate(20, 20)">',
-      # Title placed neatly at the top
-      '    <text x="0" y="12" class="title">GitHub Contributions Heatmap</text>',
+      # Title and total count combined cleanly in the header to prevent any clipping
+      (
+          '    <text x="0" y="14" class="title">GitHub Contributions'
+          f' Heatmap</text>'
+      ),
+      (
+          f'    <text x="{width - 40}" y="14" class="subtitle" text-anchor="end">'
+          f"{total_contributions} contributions in the last year</text>"
+      ),
       # Grid shifted down cleanly
       '    <g transform="translate(0, 32)">',
   ]
@@ -56,18 +63,7 @@ def render_heatmap():
           f" contributions on {date}</title></rect>"
       )
 
-  svg_lines.append("    </g>")
-
-  # Footer text positioned safely inside the expanded viewBox height
-  footer_y = 40 + (7 * step) + 32
-  svg_lines.extend([
-      (
-          f'    <text x="0" y="{footer_y}" class="text">{total_contributions}'
-          " contributions in the last year</text>"
-      ),
-      "  </g>",
-      "</svg>",
-  ])
+  svg_lines.extend(["    </g>", "  </g>", "</svg>"])
 
   output_svg = "contrib-heatmap.svg"
   with open(output_svg, "w") as f:
@@ -75,7 +71,7 @@ def render_heatmap():
 
   print(
       f"Successfully generated {output_svg} with {total_contributions} total"
-      " contributions."
+      " contributions in header."
   )
 
 
