@@ -22,32 +22,37 @@ def fetch_contributions():
     )
 
   soup = BeautifulSoup(response.text, "html.parser")
-
   days = []
-  # GitHub uses tooltips or data cells inside the contribution graph table
-  # Let's target both standard table cells and tooltips/rects
-  cells = soup.find_all("td", class_="ContributionCalendar-day")
 
-  if not cells:
-    # Fallback to finding any elements with data-date attributes if class names change
-    cells = soup.find_all(attrs={"data-date": True})
+  # Target individual contribution calendar days
+  for day in soup.find_all("td", class_="ContributionCalendar-day"):
+    date = day.get("data-date")
+    if not date:
+      continue
 
-  for cell in cells:
-    date = cell.get("data-date")
-    count_text = cell.get("data-count")
-    level = cell.get("data-level", "0")
+    # Extract commit count text or level attribute safely
+    data_count = day.get("data-count", "0")
+    count = int(data_count) if data_count.isdigit() else 0
 
-    if date:
-      count = int(count_text) if count_text and count_text.isdigit() else 0
-      days.append({"date": date, "count": count, "level": int(level)})
+    # Determine activity level (0 to 4)
+    data_level = day.get("data-level", "0")
+    level = int(data_level) if data_level.isdigit() else 0
+
+    days.append({"date": date, "count": count, "level": level})
+
+  # Ensure chronological ordering
+  days = sorted(days, key=lambda k: k["date"])
 
   os.makedirs("data", exist_ok=True)
   output_path = "data/contributions.json"
-
   with open(output_path, "w") as f:
+    json.dumps(days, f)
     json.dump(days, f, indent=2)
 
-  print(f"Successfully saved {len(days)} days of contributions to {output_path}")
+  print(
+      f"Successfully saved {len(days)} structured days of contributions to"
+      f" {output_path}"
+  )
 
 
 if __name__ == "__main__":
