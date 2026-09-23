@@ -16,7 +16,7 @@ def render_heatmap():
   total_contributions = sum(int(d.get("count", 0)) for d in days)
 
   width = 860
-  height = 195  # Increased height to prevent footer clipping
+  height = 200  # Generous height to prevent any clipping
   cell_size = 11
   cell_gap = 4
   step = cell_size + cell_gap
@@ -39,12 +39,11 @@ def render_heatmap():
       "    .heatmap-grid { animation: slideDown 0.6s ease-out forwards; }",
       "  </style>",
       f'  <rect width="100%" height="100%" fill="#0d1117" rx="6"/>',
-      # Increased outer padding group
       '  <g transform="translate(25, 25)">',
-      # Title placed safely at the top
-      '    <text x="0" y="15" class="title">GitHub Contributions Heatmap</text>',
-      # Grid shifted down cleanly to avoid any overlap
-      '    <g class="heatmap-grid" transform="translate(0, 42)">',
+      # Title at the top
+      '    <text x="0" y="12" class="title">GitHub Contributions Heatmap</text>',
+      # Grid shifted down with ample gap to avoid overlap completely
+      '    <g class="heatmap-grid" transform="translate(0, 48)">',
   ]
 
   weeks = [days[i : i + 7] for i in range(0, len(days), 7)]
@@ -66,8 +65,8 @@ def render_heatmap():
 
   svg_lines.append("    </g>")
 
-  # Footer text cleanly positioned below the grid with proper padding
-  footer_y = 42 + (7 * step) + 25
+  # Footer text cleanly positioned below the grid
+  footer_y = 48 + (7 * step) + 25
   svg_lines.extend([
       (
           f'    <text x="0" y="{footer_y}" class="text">{total_contributions}'
