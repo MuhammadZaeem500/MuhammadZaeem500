@@ -85,7 +85,7 @@ Beyond web development, I actively leverage Python to build data-driven solution
 <div align="center">
 
 <h3><code>Contribution Map</code></h3>
-<img src="./contrib-heatmap.svg?v=2" width="960" />
+<img src="./contrib-heatmap.svg?v=2" width="860" />
 
 </div>
 ---

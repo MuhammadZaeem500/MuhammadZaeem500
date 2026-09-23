@@ -16,7 +16,7 @@ def render_heatmap():
   total_contributions = sum(int(d.get("count", 0)) for d in days)
 
   width = 860
-  height = 145
+  height = 175  # Expanded height so footer is fully visible
   cell_size = 11
   cell_gap = 4
   step = cell_size + cell_gap
@@ -33,10 +33,10 @@ def render_heatmap():
       "  </style>",
       '  <rect width="100%" height="100%" fill="#0d1117" rx="6"/>',
       '  <g transform="translate(20, 20)">',
-      # Clean title positioning with zero overlap
+      # Title placed neatly at the top
       '    <text x="0" y="12" class="title">GitHub Contributions Heatmap</text>',
-      # Grid shifted down cleanly
-      '    <g transform="translate(0, 28)">',
+      # Grid shifted down cleanly to avoid title overlap
+      '    <g transform="translate(0, 32)">',
   ]
 
   weeks = [days[i : i + 7] for i in range(0, len(days), 7)]
@@ -58,8 +58,8 @@ def render_heatmap():
 
   svg_lines.append("    </g>")
 
-  # Footer text positioned correctly at the bottom with no clipping
-  footer_y = 28 + (7 * step) + 16
+  # Footer text positioned safely inside the viewBox with no clipping
+  footer_y = 40 + (7 * step) + 20
   svg_lines.extend([
       (
           f'    <text x="0" y="{footer_y}" class="text">{total_contributions}'
