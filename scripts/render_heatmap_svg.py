@@ -13,13 +13,16 @@ def render_heatmap():
   with open(json_path, "r") as f:
     days = json.load(f)
 
-  total_contributions = sum(d["count"] for d in days)
+  total_contributions = sum(int(d.get("count", 0)) for d in days)
 
-  # Build SVG content
   width = 860
-  height = 160
+  height = 195  # Increased height to prevent footer clipping
+  cell_size = 11
+  cell_gap = 4
+  step = cell_size + cell_gap
+
   svg_lines = [
-      f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width}"'
+      f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}"'
       f' width="{width}" height="{height}" style="background-color: #0d1117;'
       ' border-radius: 6px; font-family: -apple-system, BlinkMacSystemFont,'
       ' \'Segoe UI\', Helvetica, Arial, sans-serif;">',
@@ -27,32 +30,30 @@ def render_heatmap():
       "    .cell { shape-rendering: geometricPrecision; rx: 3px; ry: 3px;"
       " transition: fill 0.2s ease; }",
       "    .cell:hover { stroke: #8b949e; stroke-width: 1px; }",
-      "    .text { fill: #8b949e; font-size: 11px; }",
-      "    .title { fill: #c9d1d9; font-size: 13px; font-weight: 600; }",
+      "    .text { fill: #8b949e; font-size: 12px; }",
+      "    .title { fill: #c9d1d9; font-size: 14px; font-weight: 600; }",
       "    @keyframes slideDown {",
       "      0% { transform: translateY(-10px); opacity: 0; }",
       "      100% { transform: translateY(0); opacity: 1; }",
       "    }",
       "    .heatmap-grid { animation: slideDown 0.6s ease-out forwards; }",
       "  </style>",
-      '  <rect width="100%" height="100%" fill="#0d1117" rx="6"/>',
-      '  <g transform="translate(20, 25)">',
-      '    <text x="0" y="0" class="title">GitHub Contributions Heatmap</text>',
-      '    <g class="heatmap-grid" transform="translate(0, 15)">',
+      f'  <rect width="100%" height="100%" fill="#0d1117" rx="6"/>',
+      # Increased outer padding group
+      '  <g transform="translate(25, 25)">',
+      # Title placed safely at the top
+      '    <text x="0" y="15" class="title">GitHub Contributions Heatmap</text>',
+      # Grid shifted down cleanly to avoid any overlap
+      '    <g class="heatmap-grid" transform="translate(0, 42)">',
   ]
 
-  # Group days by weeks (columns of 7)
   weeks = [days[i : i + 7] for i in range(0, len(days), 7)]
-
-  cell_size = 11
-  cell_gap = 4
-  step = cell_size + cell_gap
 
   for w_idx, week in enumerate(weeks):
     for d_idx, day in enumerate(week):
       x = w_idx * step
       y = d_idx * step
-      level = min(day.get("level", 0), len(PALETTE) - 1)
+      level = min(int(day.get("level", 0)), len(PALETTE) - 1)
       color = PALETTE[level]
       date = day.get("date", "")
       count = day.get("count", 0)
@@ -65,10 +66,11 @@ def render_heatmap():
 
   svg_lines.append("    </g>")
 
-  # Footer stats
+  # Footer text cleanly positioned below the grid with proper padding
+  footer_y = 42 + (7 * step) + 25
   svg_lines.extend([
       (
-          f'    <text x="0" y="{7 * step + 30}" class="text">{total_contributions}'
+          f'    <text x="0" y="{footer_y}" class="text">{total_contributions}'
           " contributions in the last year</text>"
       ),
       "  </g>",
@@ -79,7 +81,10 @@ def render_heatmap():
   with open(output_svg, "w") as f:
     f.write("\n".join(svg_lines))
 
-  print(f"Successfully generated {output_svg}")
+  print(
+      f"Successfully generated {output_svg} with {total_contributions} total"
+      " contributions."
+  )
 
 
 if __name__ == "__main__":
