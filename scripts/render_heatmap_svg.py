@@ -16,34 +16,27 @@ def render_heatmap():
   total_contributions = sum(int(d.get("count", 0)) for d in days)
 
   width = 860
-  height = 200  # Generous height to prevent any clipping
+  height = 145
   cell_size = 11
   cell_gap = 4
   step = cell_size + cell_gap
 
   svg_lines = [
       f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}"'
-      f' width="{width}" height="{height}" style="background-color: #0d1117;'
+      ' width="100%" height="100%" style="background-color: #0d1117;'
       ' border-radius: 6px; font-family: -apple-system, BlinkMacSystemFont,'
       ' \'Segoe UI\', Helvetica, Arial, sans-serif;">',
       "  <style>",
-      "    .cell { shape-rendering: geometricPrecision; rx: 3px; ry: 3px;"
-      " transition: fill 0.2s ease; }",
-      "    .cell:hover { stroke: #8b949e; stroke-width: 1px; }",
-      "    .text { fill: #8b949e; font-size: 12px; }",
-      "    .title { fill: #c9d1d9; font-size: 14px; font-weight: 600; }",
-      "    @keyframes slideDown {",
-      "      0% { transform: translateY(-10px); opacity: 0; }",
-      "      100% { transform: translateY(0); opacity: 1; }",
-      "    }",
-      "    .heatmap-grid { animation: slideDown 0.6s ease-out forwards; }",
+      "    .cell { shape-rendering: geometricPrecision; rx: 2px; ry: 2px; }",
+      "    .text { fill: #8b949e; font-size: 11px; }",
+      "    .title { fill: #c9d1d9; font-size: 13px; font-weight: 600; }",
       "  </style>",
-      f'  <rect width="100%" height="100%" fill="#0d1117" rx="6"/>',
-      '  <g transform="translate(25, 25)">',
-      # Title at the top
+      '  <rect width="100%" height="100%" fill="#0d1117" rx="6"/>',
+      '  <g transform="translate(20, 20)">',
+      # Clean title positioning with zero overlap
       '    <text x="0" y="12" class="title">GitHub Contributions Heatmap</text>',
-      # Grid shifted down with ample gap to avoid overlap completely
-      '    <g class="heatmap-grid" transform="translate(0, 48)">',
+      # Grid shifted down cleanly
+      '    <g transform="translate(0, 28)">',
   ]
 
   weeks = [days[i : i + 7] for i in range(0, len(days), 7)]
@@ -65,8 +58,8 @@ def render_heatmap():
 
   svg_lines.append("    </g>")
 
-  # Footer text cleanly positioned below the grid
-  footer_y = 48 + (7 * step) + 25
+  # Footer text positioned correctly at the bottom with no clipping
+  footer_y = 28 + (7 * step) + 16
   svg_lines.extend([
       (
           f'    <text x="0" y="{footer_y}" class="text">{total_contributions}'
