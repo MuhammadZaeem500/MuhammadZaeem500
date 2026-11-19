@@ -1,79 +1,213 @@
-import json
-import os
 
-PALETTE = ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353", "#69f0a0"]
+import json
+import html
+import os
+from pathlib import Path
+
+
+JSON_PATH = Path("data/contributions.json")
+OUTPUT_PATH = Path("contrib-heatmap.svg")
+
+CELL_SIZE = 11
+CELL_GAP = 4
+STEP = CELL_SIZE + CELL_GAP
+
+LEFT_MARGIN = 40
+TOP_MARGIN = 32
+BOTTOM_MARGIN = 12
+
+WEEKDAY_LABELS = {
+    1: "Mon",
+    3: "Wed",
+    5: "Fri",
+}
 
 
 def render_heatmap():
-  json_path = "data/contributions.json"
-  if not os.path.exists(json_path):
-    print("Contributions JSON not found. Run fetch_contributions.py first.")
-    return
 
-  with open(json_path, "r") as f:
-    days = json.load(f)
+    if not JSON_PATH.exists():
+        raise FileNotFoundError(
+            "Contributions JSON not found. "
+            "Run fetch_contributions.py first."
+        )
 
-  total_contributions = sum(int(d.get("count", 0)) for d in days)
+    with JSON_PATH.open("r", encoding="utf-8") as file:
+        data = json.load(file)
 
-  width = 860
-  height = 155  # Compact height so nothing gets clipped by GitHub
-  cell_size = 11
-  cell_gap = 4
-  step = cell_size + cell_gap
+    weeks = data.get("weeks", [])
+    total = data.get("total_contributions", 0)
 
-  svg_lines = [
-      f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}"'
-      ' width="100%" height="100%" style="background-color: #0d1117;'
-      ' border-radius: 6px; font-family: -apple-system, BlinkMacSystemFont,'
-      ' \'Segoe UI\', Helvetica, Arial, sans-serif;">',
-      "  <style>",
-      "    .cell { shape-rendering: geometricPrecision; rx: 2px; ry: 2px; }",
-      "    .title { fill: #c9d1d9; font-size: 13px; font-weight: 600; }",
-      "    .subtitle { fill: #8b949e; font-size: 12px; }",
-      "  </style>",
-      '  <rect width="100%" height="100%" fill="#0d1117" rx="6"/>',
-      '  <g transform="translate(20, 20)">',
-      # Title and total count combined cleanly in the header to prevent any clipping
-      (
-          '    <text x="0" y="14" class="title">GitHub Contributions'
-          f' Heatmap</text>'
-      ),
-      (
-          f'    <text x="{width - 40}" y="14" class="subtitle" text-anchor="end">'
-          f"{total_contributions} contributions in the last year</text>"
-      ),
-      # Grid shifted down cleanly
-      '    <g transform="translate(0, 32)">',
-  ]
+    if not weeks:
+        raise ValueError("No contribution weeks found.")
 
-  weeks = [days[i : i + 7] for i in range(0, len(days), 7)]
+    width = (
+        LEFT_MARGIN
+        + len(weeks) * STEP
+        + CELL_GAP
+    )
 
-  for w_idx, week in enumerate(weeks):
-    for d_idx, day in enumerate(week):
-      x = w_idx * step
-      y = d_idx * step
-      level = min(int(day.get("level", 0)), len(PALETTE) - 1)
-      color = PALETTE[level]
-      date = day.get("date", "")
-      count = day.get("count", 0)
+    height = (
+        TOP_MARGIN
+        + 7 * STEP
+        + BOTTOM_MARGIN
+    )
 
-      svg_lines.append(
-          f'      <rect x="{x}" y="{y}" width="{cell_size}"'
-          f' height="{cell_size}" class="cell" fill="{color}"><title>{count}'
-          f" contributions on {date}</title></rect>"
-      )
+    svg = []
 
-  svg_lines.extend(["    </g>", "  </g>", "</svg>"])
+    svg.append(
+        f'<svg xmlns="http://www.w3.org/2000/svg" '
+        f'viewBox="0 0 {width} {height}" '
+        f'width="100%" height="auto" '
+        f'role="img" '
+        f'aria-label="GitHub contribution heatmap">'
+    )
 
-  output_svg = "contrib-heatmap.svg"
-  with open(output_svg, "w") as f:
-    f.write("\n".join(svg_lines))
+    svg.append("""
+    <style>
+        text {
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Helvetica,
+                Arial,
+                sans-serif;
+        }
 
-  print(
-      f"Successfully generated {output_svg} with {total_contributions} total"
-      " contributions in header."
-  )
+        .header {
+            fill: #c9d1d9;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .month {
+            fill: #8b949e;
+            font-size: 10px;
+        }
+
+        .weekday {
+            fill: #8b949e;
+            font-size: 9px;
+        }
+
+        .cell {
+            rx: 2;
+            ry: 2;
+        }
+    </style>
+    """)
+
+    svg.append(
+        f'<rect width="{width}" height="{height}" '
+        f'rx="6" fill="#0d1117"/>'
+    )
+
+    # Header
+    svg.append(
+        f'<text x="{LEFT_MARGIN}" y="17" '
+        f'class="header">'
+        f'{total} contributions in the last year'
+        f'</text>'
+    )
+
+    # Month labels
+    for week_index, week in enumerate(weeks):
+
+        month_start = None
+
+        for day in week["days"]:
+            if day["date"].endswith("-01"):
+                month_start = day
+                break
+
+        if month_start:
+            month_name = month_start["date"][5:7]
+
+            import calendar
+
+            month_text = calendar.month_abbr[
+                int(month_name)
+            ]
+
+            x = LEFT_MARGIN + week_index * STEP
+
+            svg.append(
+                f'<text x="{x}" y="29" '
+                f'class="month">'
+                f'{month_text}'
+                f'</text>'
+            )
+
+    # Weekday labels
+    for weekday, label in WEEKDAY_LABELS.items():
+
+        y = TOP_MARGIN + weekday * STEP + 8
+
+        svg.append(
+            f'<text x="0" y="{y}" '
+            f'class="weekday">'
+            f'{label}'
+            f'</text>'
+        )
+
+    # Contribution squares
+    for week_index, week in enumerate(weeks):
+
+        x = LEFT_MARGIN + week_index * STEP
+
+        for day in week["days"]:
+
+            weekday = int(day["weekday"])
+
+            y = TOP_MARGIN + weekday * STEP
+
+            color = day["color"]
+
+            # Basic validation before adding the API color to SVG.
+            if not (
+                isinstance(color, str)
+                and len(color) == 7
+                and color.startswith("#")
+                and all(
+                    char in "0123456789abcdefABCDEF"
+                    for char in color[1:]
+                )
+            ):
+                color = "#161b22"
+
+            count = int(day["count"])
+            date = html.escape(day["date"])
+
+            tooltip = (
+                f"{count} contributions on {date}"
+            )
+
+            svg.append(
+                f'<rect '
+                f'x="{x}" '
+                f'y="{y}" '
+                f'width="{CELL_SIZE}" '
+                f'height="{CELL_SIZE}" '
+                f'class="cell" '
+                f'fill="{color}">'
+                f'<title>{html.escape(tooltip)}</title>'
+                f'</rect>'
+            )
+
+    svg.append("</svg>")
+
+    OUTPUT_PATH.write_text(
+        "\n".join(svg),
+        encoding="utf-8",
+    )
+
+    print("----------------------------------")
+    print("Heatmap generated successfully!")
+    print(f"Total contributions: {total}")
+    print(f"Total weeks: {len(weeks)}")
+    print(f"Output: {OUTPUT_PATH}")
+    print("----------------------------------")
 
 
 if __name__ == "__main__":
-  render_heatmap()
+    render_heatmap()

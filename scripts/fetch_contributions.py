@@ -1,72 +1,186 @@
+
 import json
 import os
-import re
-from bs4 import BeautifulSoup
+import sys
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
 import requests
 
+
 USERNAME = "MuhammadZaeem500"
-URL = f"https://github.com/users/{USERNAME}/contributions"
+
+GRAPHQL_URL = "https://api.github.com/graphql"
+
+OUTPUT_PATH = Path("data/contributions.json")
+
+GRAPHQL_QUERY = """
+query (
+  $username: String!
+  $from: DateTime!
+  $to: DateTime!
+) {
+  user(login: $username) {
+    contributionsCollection(
+      from: $from
+      to: $to
+    ) {
+      contributionCalendar {
+        totalContributions
+
+        weeks {
+          firstDay
+
+          contributionDays {
+            date
+            contributionCount
+            contributionLevel
+            color
+            weekday
+          }
+        }
+      }
+    }
+  }
+}
+"""
 
 
 def fetch_contributions():
-  print(f"Fetching contribution data for {USERNAME}...")
-  headers = {
-      "User-Agent": (
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
-          " (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-      )
-  }
-  response = requests.get(URL, headers=headers)
-  if response.status_code != 200:
-    raise Exception(
-        f"Failed to fetch contributions. Status code: {response.status_code}"
+    token = os.getenv("GH_TOKEN")
+
+    if not token:
+        raise RuntimeError(
+            "GH_TOKEN is missing. Add your GitHub token "
+            "to repository secrets."
+        )
+
+    print(f"Fetching contributions for {USERNAME}...")
+
+    # GitHub contribution dates use UTC.
+    now = datetime.now(timezone.utc)
+    start_date = now - timedelta(days=365)
+
+    variables = {
+        "username": USERNAME,
+        "from": start_date.isoformat(),
+        "to": now.isoformat(),
+    }
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
+        "Accept": "application/vnd.github+json",
+    }
+
+    response = requests.post(
+        GRAPHQL_URL,
+        json={
+            "query": GRAPHQL_QUERY,
+            "variables": variables,
+        },
+        headers=headers,
+        timeout=30,
     )
 
-  soup = BeautifulSoup(response.text, "html.parser")
-  days = []
+    response.raise_for_status()
 
-  for day in soup.find_all("td", class_="ContributionCalendar-day"):
-    date = day.get("data-date")
-    if not date:
-      continue
+    result = response.json()
 
-    count = 0
-    level = int(day.get("data-level", "0"))
+    if result.get("errors"):
+        raise RuntimeError(
+            f"GitHub GraphQL error: {result['errors']}"
+        )
 
-    # Check text content or tooltips inside the cell
-    text_content = day.get_text(strip=True)
-    aria_label = day.get("aria-label", "")
+    user = result.get("data", {}).get("user")
 
-    # Combine text inspection for safety
-    combined_info = f"{text_content} {aria_label}"
-    match = re.search(r"(\d+)\s+contribution", combined_info, re.IGNORECASE)
-    if match:
-      count = int(match.group(1))
-    elif "no contribution" in combined_info.lower():
-      count = 0
-    else:
-      # If level is active but text is hidden, map a basic estimate or check data-count
-      data_count = day.get("data-count")
-      if data_count and data_count.isdigit():
-        count = int(data_count)
-      elif level > 0:
-        count = level * 2  # fallback scale based on intensity level
+    if not user:
+        raise RuntimeError(
+            f"GitHub user '{USERNAME}' was not found."
+        )
 
-    days.append({"date": date, "count": count, "level": level})
+    calendar = (
+        user["contributionsCollection"]["contributionCalendar"]
+    )
 
-  days = sorted(days, key=lambda k: k["date"])
+    total_contributions = calendar["totalContributions"]
 
-  os.makedirs("data", exist_ok=True)
-  output_path = "data/contributions.json"
-  with open(output_path, "w") as f:
-    json.dump(days, f, indent=2)
+    weeks = []
+    all_days = []
 
-  total = sum(d["count"] for d in days)
-  print(
-      f"Successfully saved {len(days)} structured days of contributions to"
-      f" {output_path}. Total: {total}"
-  )
+    for week in calendar["weeks"]:
+        week_days = []
+
+        for day in week["contributionDays"]:
+            contribution = {
+                "date": day["date"],
+                "count": day["contributionCount"],
+                "level": day["contributionLevel"],
+                "color": day["color"],
+                "weekday": day["weekday"],
+            }
+
+            week_days.append(contribution)
+            all_days.append(contribution)
+
+        weeks.append({
+            "first_day": week["firstDay"],
+            "days": week_days,
+        })
+
+    calculated_total = sum(
+        day["count"] for day in all_days
+    )
+
+    if calculated_total != total_contributions:
+        print(
+            "Warning: Calendar day sum differs from "
+            "GitHub's reported total."
+        )
+
+        print(
+            f"GitHub total: {total_contributions}, "
+            f"day sum: {calculated_total}"
+        )
+
+    data = {
+        "username": USERNAME,
+        "generated_at": now.isoformat(),
+        "range": {
+            "from": start_date.date().isoformat(),
+            "to": now.date().isoformat(),
+        },
+        "total_contributions": total_contributions,
+        "weeks": weeks,
+        "days": all_days,
+    }
+
+    OUTPUT_PATH.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    with OUTPUT_PATH.open("w", encoding="utf-8") as file:
+        json.dump(
+            data,
+            file,
+            indent=2,
+            ensure_ascii=False,
+        )
+
+    print("----------------------------------")
+    print("Contribution data fetched successfully!")
+    print(f"Username: {USERNAME}")
+    print(f"Total contributions: {total_contributions}")
+    print(f"Total days: {len(all_days)}")
+    print(f"Total weeks: {len(weeks)}")
+    print(f"Saved to: {OUTPUT_PATH}")
+    print("----------------------------------")
 
 
 if __name__ == "__main__":
-  fetch_contributions()
+    try:
+        fetch_contributions()
+    except Exception as error:
+        print(f"ERROR: {error}", file=sys.stderr)
+        sys.exit(1)
