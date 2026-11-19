@@ -1,169 +1,338 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Muhammad Zaeem - GitHub Profile</title>
-    <!-- Google Fonts: Ubuntu -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Muhammad Zaeem – Full-Stack & AI/ML Developer</title>
+<meta name="description" content="Portfolio of Muhammad Zaeem, a Computer Science student building full-stack web apps and machine learning projects.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo+Play:wght@200..1000&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Rubik+Storm&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#15163B; --paper:#F3F2FF; --blue:#3B2EFF; --coral:#FF5C8A;
+  --mint:#BDF3DC; --butter:#FFD84D; --lilac:#D8D4FF; --white:#fff;
+  --f-display:"Rubik Storm","Montserrat Alternates",sans-serif;
+  --f-head:"Montserrat Alternates","Montserrat",sans-serif;
+  --f-title:"Cairo Play","Montserrat",sans-serif;
+  --f-body:"Montserrat",system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:1rem;line-height:1.7;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--coral);outline-offset:3px;border-radius:6px}
+.wrap{width:min(1120px,100% - 2.5rem);margin-inline:auto}
+
+/* Top bar */
+.top{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 0}
+.mark{font-family:var(--f-head);font-weight:800;font-size:1.25rem;text-decoration:none;background:var(--ink);color:var(--paper);padding:.15rem .7rem;border-radius:10px}
+.top nav{display:flex;gap:1.5rem}
+.top nav a{font-family:var(--f-head);font-weight:600;font-size:.95rem;text-decoration:none;padding:.25rem 0;border-bottom:2px solid transparent}
+.top nav a:hover{border-color:var(--coral)}
+
+/* Hero */
+.hero{padding:clamp(2.5rem,7vw,5.5rem) 0 clamp(3rem,8vw,6rem)}
+.status{display:inline-block;font-family:var(--f-head);font-weight:600;font-size:.9rem;background:var(--mint);border:2px solid var(--ink);border-radius:999px;padding:.3rem 1rem;margin:0 0 1.5rem}
+.hero h1{font-family:var(--f-display);font-weight:400;font-size:clamp(3.6rem,13.5vw,10.5rem);line-height:.9;letter-spacing:-.01em;margin:0;color:var(--blue);text-shadow:.045em .045em 0 var(--coral)}
+.hero .role{font-family:var(--f-head);font-weight:700;font-size:clamp(1.3rem,3vw,2rem);line-height:1.3;margin:2rem 0 .75rem;max-width:30ch}
+.hero .lede{max-width:56ch;margin:0 0 2rem;font-size:1.1rem}
+.actions{display:flex;flex-wrap:wrap;gap:.9rem}
+.btn{font-family:var(--f-head);font-weight:700;font-size:1rem;text-decoration:none;padding:.85rem 1.6rem;border-radius:14px;border:2px solid var(--ink);transition:transform .15s,box-shadow .15s}
+.btn-main{background:var(--blue);color:var(--white);box-shadow:4px 4px 0 var(--ink)}
+.btn-alt{background:var(--white);box-shadow:4px 4px 0 var(--ink)}
+.btn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
+
+/* Sections */
+section{padding:clamp(3rem,7vw,5.5rem) 0;border-top:2px solid var(--ink)}
+h2{font-family:var(--f-head);font-weight:800;font-size:clamp(1.9rem,4.2vw,2.9rem);line-height:1.1;margin:0 0 2rem;letter-spacing:-.01em}
+.split{display:grid;grid-template-columns:1.4fr 1fr;gap:clamp(2rem,6vw,5rem);align-items:start}
+.about p{margin:0 0 1.1rem;max-width:62ch}
+.facts{margin:0;padding:0;list-style:none;background:var(--white);border:2px solid var(--ink);border-radius:22px;box-shadow:6px 6px 0 var(--ink)}
+.facts li{padding:1rem 1.4rem;border-top:2px solid var(--ink);font-weight:500}
+.facts li:first-child{border-top:0}
+.facts b{display:block;font-family:var(--f-head);font-weight:700;font-size:.9rem;opacity:.65}
+
+/* Stack */
+.stack-row{display:grid;grid-template-columns:200px 1fr;gap:1rem;padding:1.1rem 0;border-top:2px solid var(--ink)}
+.stack-row:last-child{border-bottom:2px solid var(--ink)}
+.stack-row h3{font-family:var(--f-head);font-weight:700;font-size:1.1rem;margin:.25rem 0 0}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:0;padding:0;list-style:none}
+.chips li{font-weight:600;font-size:.92rem;background:var(--white);border:2px solid var(--ink);border-radius:999px;padding:.2rem 1rem;line-height:1.6}
+
+/* Projects */
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1.1rem}
+.project{border:2px solid var(--ink);border-radius:22px;padding:clamp(1.4rem,3vw,2.2rem);display:flex;flex-direction:column;gap:.9rem}
+.project h3{font-family:var(--f-title);font-weight:800;font-size:clamp(1.6rem,3vw,2.2rem);line-height:1.1;margin:0}
+.project p{margin:0}
+.project .stack{font-weight:700;font-size:.9rem;margin-top:auto;padding-top:1rem;border-top:2px solid currentColor}
+.p1{grid-column:span 4;background:var(--blue);color:var(--white);border-radius:34px}
+.p2{grid-column:span 2;background:var(--mint)}
+.p3{grid-column:span 3;background:var(--butter)}
+.p4{grid-column:span 3;background:var(--lilac)}
+.p1 h3{font-size:clamp(2.2rem,5vw,3.6rem)}
+
+/* GitHub activity */
+.stats{display:grid;grid-template-columns:1fr;gap:1.1rem}
+.panel{background:var(--white);border:2px solid var(--ink);border-radius:22px;padding:1.25rem}
+.panel.center{display:flex;justify-content:center;overflow-x:auto}
+.panel img{height:auto}
+.hm-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem 1.5rem;align-items:baseline;margin-bottom:1rem}
+.hm-head strong{font-family:var(--f-head);font-weight:800;font-size:1.25rem}
+.hm-head a{font-weight:600;font-size:.92rem}
+.hm-scroll{overflow-x:auto;padding-bottom:.5rem}
+.hm{--cell:13px;--gap:3px;--step:16px;width:max-content;min-width:100%}
+.hm-months{position:relative;height:1.4rem;font-size:.78rem;font-weight:600}
+.hm-months span{position:absolute;top:0}
+.hm-grid{display:grid;grid-template-rows:repeat(7,var(--cell));grid-auto-flow:column;grid-auto-columns:var(--cell);gap:var(--gap)}
+.day{width:var(--cell);height:var(--cell);border-radius:4px;background:#E7E5FF}
+.day.l1{background:#B9B3FF}
+.day.l2{background:#8A80FF}
+.day.l3{background:#3B2EFF}
+.day.l4{background:#15163B}
+.day.none{background:transparent}
+.hm-legend{display:flex;align-items:center;gap:.35rem;justify-content:flex-end;font-size:.8rem;font-weight:600;margin-top:.8rem}
+.hm-legend .day{display:inline-block}
+
+/* Learning */
+.learn{display:grid;grid-template-columns:repeat(3,1fr);margin:0;padding:0;list-style:none;border:2px solid var(--ink);border-radius:22px;background:var(--white);overflow:hidden}
+.learn li{padding:1.6rem}
+.learn li+li{border-left:2px solid var(--ink)}
+.learn h3{font-family:var(--f-head);font-weight:700;font-size:1.15rem;margin:0 0 .5rem}
+.learn p{margin:0;font-size:.97rem}
+
+/* Contact */
+.contact{background:var(--ink);color:var(--paper);border-top:0;border-radius:40px 40px 0 0;margin-top:2rem}
+.contact h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2.6rem,9vw,6.5rem);line-height:.95;margin:0 0 1.5rem;color:var(--butter)}
+.contact p{max-width:48ch;margin:0 0 2rem;font-size:1.1rem}
+.contact .btn{border-color:var(--paper);box-shadow:4px 4px 0 var(--coral);background:var(--paper);color:var(--ink)}
+.contact .btn:hover{box-shadow:2px 2px 0 var(--coral)}
+footer{background:var(--ink);color:var(--paper);padding:1.5rem 0 2rem;font-size:.9rem;opacity:.9}
+
+/* One page-load moment */
+@keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.hero h1{animation:rise .8s cubic-bezier(.2,.8,.2,1) both}
+.hero .status,.hero .role,.hero .lede,.hero .actions{animation:rise .7s .25s cubic-bezier(.2,.8,.2,1) both}
+
+@media (max-width:820px){
+  .split{grid-template-columns:1fr}
+  .stack-row{grid-template-columns:1fr;gap:.6rem}
+  .p1,.p2,.p3,.p4{grid-column:span 6}
+  .learn{grid-template-columns:1fr}
+  .learn li+li{border-left:0;border-top:2px solid var(--ink)}
+  .top nav{gap:1rem}
+  .top nav a:nth-child(2){display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
 </head>
 <body>
 
-    <!-- Header Section -->
-    <div class="profile-header">
-        <h1>Hi, I'm Muhammad Zaeem 💻</h1>
-        <h3>Software Developer & Full-Stack / AI-ML Enthusiast 🚀</h3>
-        
-        <div class="social-links">
-            <a href="https://zaeem-dev-portfolio-ndyr.vercel.app/" target="_blank">
-                <img src="https://img.shields.io/badge/🌐_Portfolio-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Portfolio"/>
-            </a>
-            <a href="https://www.linkedin.com/in/muhammad-zaeem-sheikh/" target="_blank">
-                <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
-            </a>
-            <a href="mailto:zaeemsheikh102@gmail.com">
-                <img src="https://img.shields.io/badge/Gmail-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/>
-            </a>
-        </div>
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="#top" aria-label="Muhammad Zaeem, back to top">MZ</a>
+    <nav aria-label="Main">
+      <a href="#about">About</a>
+      <a href="#stack">Stack</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <p class="status">Final-year Computer Science student, Lahore</p>
+      <h1>Muhammad Zaeem</h1>
+      <p class="role">I build full-stack web apps and machine learning tools.</p>
+      <p class="lede">React and Next.js on the front, NestJS and PostgreSQL behind it, and Python when the problem is about data.</p>
+      <div class="actions">
+        <a class="btn btn-main" href="#projects">See my projects</a>
+        <a class="btn btn-alt" href="mailto:zaeemsheikh102@gmail.com">Email me</a>
+      </div>
     </div>
 
-    <hr>
-
-    <!-- About Me Section -->
-    <section>
-        <h2>🎯 About Me</h2>
-        <p>
-            I'm a Computer Science student and Software Developer specializing in building scalable, modern web applications with <strong>React.js, Next.js, TypeScript, and Tailwind CSS</strong>, backed by robust server-side architectures using <strong>NestJS, Prisma, and PostgreSQL</strong>.
-        </p>
-        <p>
-            Beyond web development, I actively leverage Python to build data-driven solutions and machine learning pipelines.
-        </p>
-    </section>
-
-    <hr>
-
-    <!-- Tech Stack & Tools -->
-    <section>
-        <h2>⚡ Tech Stack & Tools</h2>
-        <div class="table-container">
-            <table>
-                <tr>
-                    <td><strong>Frontend 🖥️</strong></td>
-                    <td>
-                        <img src="https://img.shields.io/badge/React-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB" alt="React">
-                        <img src="https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js"> <br>
-                        <img src="https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
-                        <img src="https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="TailwindCSS"> <br>
-                        <img src="https://img.shields.io/badge/Material%20UI-%230081CB.svg?style=for-the-badge&logo=mui&logoColor=white" alt="MUI">
-                        <img src="https://img.shields.io/badge/Redux-593D88?style=for-the-badge&logo=redux&logoColor=white" alt="Redux">
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Backend ⚙️</strong></td>
-                    <td>
-                        <img src="https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS">
-                        <img src="https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white" alt="NodeJS">
-                        <img src="https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=white" alt="Express.js">
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Database & ORM 🗄️</strong></td>
-                    <td>
-                        <img src="https://img.shields.io/badge/PostgreSQL-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
-                        <img src="https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white" alt="Prisma">
-                        <img src="https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL">
-                        <img src="https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Data & ML 📊</strong></td>
-                    <td>
-                        <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" alt="Python">
-                        <img src="https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white" alt="Pandas">
-                        <img src="https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white" alt="NumPy">
-                        <img src="https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="Scikit-Learn">
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Tools 🛠️</strong></td>
-                    <td>
-                        <img src="https://img.shields.io/badge/git-%23F05032.svg?style=for-the-badge&logo=git&logoColor=white" alt="Git">
-                        <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
-                        <img src="https://img.shields.io/badge/VS%20Code-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white" alt="VS Code">
-                        <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white" alt="Postman">
-                        <img src="https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white" alt="Figma">
-                        <img src="https://img.shields.io/badge/Render-%2346E3B7.svg?style=for-the-badge&logo=render&logoColor=white" alt="Render">
-                    </td>
-                </tr>
-            </table>
+    <section id="about">
+      <div class="split about">
+        <div>
+          <h2>About me</h2>
+          <p>I’m a Computer Science student who likes shipping things people can actually use. I build scalable web apps with <strong>React.js, Next.js, TypeScript and Tailwind CSS</strong>, backed by server-side architecture in <strong>NestJS, Prisma and PostgreSQL</strong>.</p>
+          <p>Outside the web, I use Python to build data-driven solutions and machine learning pipelines, from exploratory analysis to trained models.</p>
         </div>
-    </section>
-
-    <hr>
-
-    <!-- Featured Projects -->
-    <section>
-        <h2>📌 Featured Projects</h2>
-        <ul>
-            <li>
-                <strong>📚 BookShelf</strong>
-                <ul>
-                    <li>A Letterboxd-inspired social platform designed for book lovers to discover, track, rate, and review their reading journeys.</li>
-                    <li><strong>Stack:</strong> Next.js • TypeScript • Tailwind • NestJS • Prisma • PostgreSQL</li>
-                    <li><strong>Highlights:</strong> Full-stack architecture, secure authentication workflows, and a responsive custom UI.</li>
-                </ul>
-            </li>
-            <li>
-                <strong>💳 LoanLens</strong>
-                <ul>
-                    <li>An intelligent financial analytics platform built to assess loan risk, automate application processing, and deliver predictive insights for lending operations.</li>
-                    <li><strong>Stack:</strong> Python • Scikit-learn • Next.js • Tailwind • PostgreSQL</li>
-                    <li><strong>Highlights:</strong> Integrated machine learning models to evaluate creditworthiness, coupled with an intuitive dashboard for risk visualization.</li>
-                </ul>
-            </li>
-            <li>
-                <strong>🚕 NYC Yellow Taxi Analysis</strong>
-                <ul>
-                    <li>An end-to-end data science and machine learning pipeline analyzing 2.3M+ records to uncover urban mobility patterns, fare anomalies, and predictive rider behaviors.</li>
-                    <li><strong>Stack:</strong> Python • Pandas • NumPy • Matplotlib • Scikit-learn</li>
-                    <li><strong>Highlights:</strong> Rigorous EDA and trained regression/classification models to predict trip outcomes.</li>
-                </ul>
-            </li>
-            <li>
-                <strong>👥 HRM System</strong>
-                <ul>
-                    <li>A comprehensive full-stack Human Resource Management application designed to streamline employee lifecycle tracking and secure role-based access.</li>
-                    <li><strong>Stack:</strong> Next.js • Redux Toolkit • NestJS • Prisma • PostgreSQL</li>
-                    <li><strong>Highlights:</strong> Streamlined administrative workflows and robust state management.</li>
-                </ul>
-            </li>
+        <ul class="facts">
+          <li><b>Focus</b>Full-stack development</li>
+          <li><b>Also into</b>AI/ML and data science</li>
+          <li><b>Studying</b>BSCS, final year</li>
+          <li><b>Based in</b>Lahore, Pakistan</li>
         </ul>
+      </div>
     </section>
 
-    <hr>
+    <section id="stack">
+      <h2>Tech stack and tools</h2>
+      <div>
+        <div class="stack-row"><h3>Frontend</h3><ul class="chips"><li>React</li><li>Next.js</li><li>TypeScript</li><li>Tailwind CSS</li><li>Material UI</li><li>Redux</li></ul></div>
+        <div class="stack-row"><h3>Backend</h3><ul class="chips"><li>NestJS</li><li>Node.js</li><li>Express.js</li></ul></div>
+        <div class="stack-row"><h3>Database and ORM</h3><ul class="chips"><li>PostgreSQL</li><li>Prisma</li><li>MySQL</li><li>MongoDB</li></ul></div>
+        <div class="stack-row"><h3>Data and ML</h3><ul class="chips"><li>Python</li><li>Pandas</li><li>NumPy</li><li>Scikit-learn</li></ul></div>
+        <div class="stack-row"><h3>Tools</h3><ul class="chips"><li>Git</li><li>GitHub</li><li>VS Code</li><li>Postman</li><li>Figma</li><li>Render</li></ul></div>
+      </div>
+    </section>
 
-    <!-- GitHub Stats (Centered) -->
-    <section class="stats-container">
-        <h2>📊 GitHub Stats</h2>
-        <div class="card-wrapper">
-            <img src="https://githubcard.com/muhammadzaeem500.svg?d=-wfowt07Y22W" alt="GitHub Card" />
+    <section id="projects">
+      <h2>Featured projects</h2>
+      <div class="grid">
+        <article class="project p1">
+          <h3>BookShelf</h3>
+          <p>A Letterboxd-inspired social platform where book lovers discover, track, rate and review what they read.</p>
+          <p>Full-stack architecture, secure authentication and a responsive custom UI.</p>
+          <p class="stack">Next.js, TypeScript, Tailwind, NestJS, Prisma, PostgreSQL</p>
+        </article>
+        <article class="project p2">
+          <h3>LoanLens</h3>
+          <p>Assesses loan risk, automates application processing and gives lenders predictive insights.</p>
+          <p>Machine learning models score creditworthiness, shown in a risk dashboard.</p>
+          <p class="stack">Python, Scikit-learn, Next.js, Tailwind, PostgreSQL</p>
+        </article>
+        <article class="project p3">
+          <h3>NYC Yellow Taxi Analysis</h3>
+          <p>An end-to-end data science pipeline over 2.3M+ trip records, uncovering mobility patterns, fare anomalies and rider behavior.</p>
+          <p>Thorough EDA, plus regression and classification models that predict trip outcomes.</p>
+          <p class="stack">Python, Pandas, NumPy, Matplotlib, Scikit-learn</p>
+        </article>
+        <article class="project p4">
+          <h3>HRM System</h3>
+          <p>A full-stack Human Resource Management app that tracks the employee lifecycle with secure role-based access.</p>
+          <p>Smoother admin workflows and dependable state management.</p>
+          <p class="stack">Next.js, Redux Toolkit, NestJS, Prisma, PostgreSQL</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="activity">
+      <h2>GitHub activity</h2>
+      <div class="stats">
+        <div class="panel">
+          <div class="hm-head">
+            <strong id="hm-total">Contributions in the last year</strong>
+            <a href="https://github.com/MuhammadZaeem500" target="_blank" rel="noopener">View profile on GitHub</a>
+          </div>
+          <!-- Fallback image is shown until the live graph loads, or if it can't -->
+          <div class="hm-scroll" id="hm-scroll">
+            <img id="hm-fallback" src="contrib-heatmap.svg" alt="Contribution heatmap for the past year">
+          </div>
         </div>
+        <div class="panel center">
+          <img src="https://githubcard.com/muhammadzaeem500.svg?d=-wfowt07Y22W" alt="GitHub stats card for muhammadzaeem500" loading="lazy">
+        </div>
+      </div>
     </section>
 
-    <hr>
+    <section id="learning">
+      <h2>Currently learning</h2>
+      <ul class="learn">
+        <li><h3>AI agent orchestration</h3><p>Building autonomous workflows with LangChain and agent frameworks.</p></li>
+        <li><h3>Model Context Protocol</h3><p>Exploring context-sharing patterns for LLM applications.</p></li>
+        <li><h3>Cloud architecture</h3><p>Deploying microservices and containerizing workflows with Docker.</p></li>
+      </ul>
+    </section>
+  </main>
+</div>
 
-    <!-- Currently Learning & Exploring -->
-    <section>
-        <h2>🧠 Currently Learning & Exploring</h2>
-        <ul>
-            <li>🤖 <strong>AI Agent Orchestration:</strong> Building autonomous workflows using LangChain and agent frameworks.</li>
-            <li>🔌 <strong>Model Context Protocol (MCP):</strong> Exploring advanced context-sharing patterns for LLM applications.</li>
-            <li>☁️ <strong>Cloud Architecture:</strong> Expanding microservices deployment pipelines and containerization workflows with Docker.</li>
-        </ul>
-    </section>  
+<section class="contact" id="contact">
+  <div class="wrap">
+    <h2>Let’s build something.</h2>
+    <p>Have a project, an internship or a question? Send me an email and I’ll reply.</p>
+    <div class="actions">
+      <a class="btn" href="mailto:zaeemsheikh102@gmail.com">zaeemsheikh102@gmail.com</a>
+      <a class="btn" href="https://www.linkedin.com/in/muhammad-zaeem-sheikh/" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://zaeem-dev-portfolio-ndyr.vercel.app/" target="_blank" rel="noopener">Portfolio</a>
+    </div>
+  </div>
+</section>
+<footer><div class="wrap">© Muhammad Zaeem</div></footer>
+
+<script>
+/* Live GitHub contribution graph.
+   Falls back to contrib-heatmap.svg (already in the page) if the request fails. */
+(function () {
+  var USER = "MuhammadZaeem500";
+  var box = document.getElementById("hm-scroll");
+  var totalEl = document.getElementById("hm-total");
+  var CELL = 13, GAP = 3, STEP = CELL + GAP;
+  var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  function parse(d) { var p = d.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
+
+  function render(data) {
+    var days = (data && data.contributions) || [];
+    if (!days.length) return;
+
+    var total = days.reduce(function (s, d) { return s + d.count; }, 0);
+    var lead = parse(days[0].date).getDay(); // empty cells so the first day lands on the right weekday
+
+    var grid = document.createElement("div");
+    grid.className = "hm-grid";
+    grid.setAttribute("role", "img");
+    grid.setAttribute("aria-label", total + " contributions in the last year");
+
+    for (var i = 0; i < lead; i++) {
+      var pad = document.createElement("div");
+      pad.className = "day none";
+      grid.appendChild(pad);
+    }
+
+    var months = document.createElement("div");
+    months.className = "hm-months";
+    var lastMonth = -1;
+
+    days.forEach(function (d, idx) {
+      var date = parse(d.date);
+      var cell = document.createElement("div");
+      cell.className = "day l" + Math.min(4, Math.max(0, d.level || 0));
+      cell.title = d.count + (d.count === 1 ? " contribution on " : " contributions on ") +
+        date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      grid.appendChild(cell);
+
+      // month label above the first full week of each month
+      var col = Math.floor((idx + lead) / 7);
+      if (date.getDate() <= 7 && date.getMonth() !== lastMonth && date.getDay() === 0 || (idx === 0)) {
+        if (date.getMonth() !== lastMonth) {
+          var s = document.createElement("span");
+          s.textContent = MONTHS[date.getMonth()];
+          s.style.left = col * STEP + "px";
+          months.appendChild(s);
+          lastMonth = date.getMonth();
+        }
+      }
+    });
+
+    var legend = document.createElement("div");
+    legend.className = "hm-legend";
+    legend.innerHTML = "Less " +
+      [0,1,2,3,4].map(function (l) { return '<span class="day l' + l + '"></span>'; }).join("") +
+      " More";
+
+    var hm = document.createElement("div");
+    hm.className = "hm";
+    hm.appendChild(months);
+    hm.appendChild(grid);
+    hm.appendChild(legend);
+
+    box.innerHTML = "";
+    box.appendChild(hm);
+    box.scrollLeft = box.scrollWidth; // show the most recent weeks first on small screens
+    totalEl.textContent = total.toLocaleString("en-US") + " contributions in the last year";
+  }
+
+  fetch("https://github-contributions-api.jogruber.de/v4/" + USER + "?y=last")
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(render)
+    .catch(function () { /* keep the static SVG fallback */ });
+})();
+</script>
 
 </body>
 </html>
