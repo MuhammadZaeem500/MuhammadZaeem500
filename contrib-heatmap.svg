@@ -50,7 +50,6 @@
 <text x="0" y="55" class="weekday">Mon</text>
 <text x="0" y="85" class="weekday">Wed</text>
 <text x="0" y="115" class="weekday">Fri</text>
-<rect x="40" y="77" width="11" height="11" class="cell" fill="#ebedf0"><title>0 contributions on 2025-11-26</title></rect>
 <rect x="40" y="92" width="11" height="11" class="cell" fill="#ebedf0"><title>0 contributions on 2025-11-27</title></rect>
 <rect x="40" y="107" width="11" height="11" class="cell" fill="#ebedf0"><title>0 contributions on 2025-11-28</title></rect>
 <rect x="40" y="122" width="11" height="11" class="cell" fill="#ebedf0"><title>0 contributions on 2025-11-29</title></rect>
@@ -416,4 +415,5 @@
 <rect x="820" y="62" width="11" height="11" class="cell" fill="#40c463"><title>7 contributions on 2026-11-24</title></rect>
 <rect x="820" y="77" width="11" height="11" class="cell" fill="#9be9a8"><title>3 contributions on 2026-11-25</title></rect>
 <rect x="820" y="92" width="11" height="11" class="cell" fill="#ebedf0"><title>0 contributions on 2026-11-26</title></rect>
+<rect x="820" y="107" width="11" height="11" class="cell" fill="#ebedf0"><title>0 contributions on 2026-11-27</title></rect>
 </svg>
